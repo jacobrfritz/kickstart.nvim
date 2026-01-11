@@ -1,92 +1,5 @@
---[[
-
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
-What is Kickstart?
-
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
-    If you don't know anything about Lua, I recommend taking some time to read through
-    a guide. One possible example which will only take 10-15 minutes:
-      - https://learnxinyminutes.com/docs/lua/
-
-    After understanding a bit more about Lua, you can use `:help lua-guide` as a
-    reference for how Neovim integrates Lua.
-    - :help lua-guide
-    - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
-Kickstart Guide:
-
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know the Neovim basics, you can skip this step.)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
-
-  Next, run AND READ `:help`.
-    This will open up a help window with some basic information
-    about reading, navigating and searching the builtin help documentation.
-
-    This should be the first place you go to look when you're stuck or confused
-    with something. It's one of my favorite Neovim features.
-
-    MOST IMPORTANTLY, we provide a keymap "<space>sh" to [s]earch the [h]elp documentation,
-    which is very useful when you're not exactly sure of what you're looking for.
-
-  I have left several `:help X` comments throughout the init.lua
-    These are hints about where to find more information about the relevant settings,
-    plugins or Neovim features used in Kickstart.
-
-   NOTE: Look for lines like this
-
-    Throughout the file. These are for you, the reader, to help you understand what is happening.
-    Feel free to delete them once you know what you're doing, but they should serve as a guide
-    for when you are first encountering a few different constructs in your Neovim config.
-
-If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
---]]
-
 -- Set <space> as the leader key
 -- See `:help mapleader`
---  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -95,13 +8,11 @@ vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
--- NOTE: You can change these options as you wish!
---  For more options, you can see `:help option-list`
 
 -- Make line numbers default
 vim.o.number = true
--- You can also add relative line numbers, to help with jumping.
---  Experiment for yourself to see if you like it!
+
+--  Relative Line Numbers
 -- vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
@@ -111,8 +22,6 @@ vim.o.mouse = 'a'
 vim.o.showmode = false
 
 -- Sync clipboard between OS and Neovim.
---  Schedule the setting after `UiEnter` because it can increase startup-time.
---  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
 vim.schedule(function()
   vim.o.clipboard = 'unnamedplus'
@@ -299,26 +208,17 @@ require('lazy').setup({
   -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
 
   -- MY PLUGINS
-
-  -- Animates the cursor
   {
-    'sphamba/smear-cursor.nvim',
-    opts = {
-      stiffness = 0.9, -- Lower = "lazier" and softer movement
-      trailing_stiffness = 0.5, -- Lower = longer, softer trail
-      distance_stop_animating = 0.5, -- Smooths out the final "snap"
-      color_interpolation_exponential = false,
-      cursor_color = '#fab387',
-      background_color = '#1a1b26',
-    },
+    'MagicDuck/grug-far.nvim',
+    config = function()
+      require('grug-far').setup {}
+      vim.keymap.set('n', '<leader>sp', '<cmd>GrugFar<CR>', { desc = '[S]earch and Re[p]lace' })
+    end,
   },
-
   {
     'folke/noice.nvim',
     event = 'VeryLazy',
-    opts = {
-      -- add any options here
-    },
+    opts = {},
     dependencies = {
       -- if you took out these dependencies, noice would fail
       'MunifTanjim/nui.nvim',
@@ -535,6 +435,20 @@ require('lazy').setup({
         --   },
         -- },
         -- pickers = {}
+        defaults = {
+          mappings = {
+            -- "i" is for Insert mode (when you are typing to search)
+            i = {
+              ['<C-s>'] = 'select_vertical', -- Use Ctrl+s since Ctrl+v is broken for you
+              ['<C-h>'] = 'select_horizontal', -- Use Ctrl+h for horizontal split
+            },
+            -- "n" is for Normal mode (after you press Esc)
+            n = {
+              ['v'] = 'select_vertical', -- Now pressing 'v' will split vertically!
+              ['s'] = 'select_horizontal', -- Now pressing 's' will split horizontally
+            },
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -891,7 +805,7 @@ require('lazy').setup({
           return nil
         else
           return {
-            timeout_ms = 500,
+            timeout_ms = 1000,
             lsp_format = 'fallback',
           }
         end
@@ -902,7 +816,7 @@ require('lazy').setup({
         python = { 'isort', 'black' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
-        -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        javascript = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -1160,3 +1074,20 @@ if vim.fn.has 'win32' == 1 then
   vim.opt.shellquote = ''
   vim.opt.shellxquote = ''
 end
+
+-- Function to clear backgrounds
+local function clear_bg()
+  local groups = { 'Normal', 'NormalFloat', 'NormalNC', 'SignColumn', 'FoldColumn', 'MsgArea' }
+  for _, group in ipairs(groups) do
+    vim.api.nvim_set_hl(0, group, { bg = 'none' })
+  end
+end
+
+-- Apply the transparency
+clear_bg()
+
+-- change tab size
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+vim.opt.softtabstop = 4
