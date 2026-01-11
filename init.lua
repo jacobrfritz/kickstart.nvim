@@ -159,7 +159,7 @@ vim.o.inccommand = 'split'
 vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 10
+vim.o.scrolloff = 15 -- Default is 10
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -297,7 +297,99 @@ require('lazy').setup({
   --
   -- Then, because we use the `opts` key (recommended), the configuration runs
   -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
+
+  -- MY PLUGINS
+
+  -- Animates the cursor
+  {
+    'sphamba/smear-cursor.nvim',
+    opts = {
+      cursor_color = '#01450d', -- Matches the "soft" color above
+      stiffness = 0.9, -- Lower = "lazier" and softer movement
+      trailing_stiffness = 0.5, -- Lower = longer, softer trail
+      distance_stop_animating = 0.5, -- Smooths out the final "snap"
+      color_interpolation_exponential = false,
+    },
+  },
+
+  {
+    'folke/noice.nvim',
+    event = 'VeryLazy',
+    opts = {
+      -- add any options here
+    },
+    dependencies = {
+      -- if you took out these dependencies, noice would fail
+      'MunifTanjim/nui.nvim',
+      -- OPTIONAL:
+      --   `nvim-notify` is used to make the popup notifications look great.
+      --   `rcarriga/nvim-notify`
+      'rcarriga/nvim-notify',
+    },
+  },
+
+  { -- Add indentation guides even on blank lines
+    'lukas-reineke/indent-blankline.nvim',
+    -- See `:help ibl`
+    main = 'ibl',
+    opts = {
+      indent = {
+        char = '┊', -- You can change this to '│' if you prefer solid lines
+      },
+      scope = {
+        enabled = true,
+        show_start = false,
+        show_end = false,
+      },
+    },
+  },
+
   -- PROJECT ERRORS: Trouble.nvim
+  -- FILE EXPLORER: Edit your filesystem like a normal text buffer
+  {
+    'stevearc/oil.nvim',
+    opts = {},
+    -- Optional dependencies
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    config = function()
+      require('oil').setup()
+      vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
+    end,
+  },
+
+  -- AUTO-PAIRS: Automatically close brackets, quotes, and parenthesis
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    opts = {}, -- this runs setup() automatically
+  },
+
+  -- STATUSLINE: A more feature-rich bottom status bar
+  {
+    'nvim-lualine/lualine.nvim',
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    opts = {
+      options = {
+        theme = 'catppuccin',
+        component_separators = '|',
+        section_separators = '',
+      },
+    },
+  },
+
+  -- COLORSCHEME: High-contrast, soft color palette
+  {
+    'catppuccin/nvim',
+    name = 'catppuccin',
+    priority = 1000,
+    config = function()
+      require('catppuccin').setup {
+        flavour = 'mocha', -- latte, frappe, macchiato, mocha
+      }
+      vim.cmd.colorscheme 'catppuccin'
+    end,
+  },
+
   {
     'folke/trouble.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -819,7 +911,7 @@ require('lazy').setup({
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
-        -- python = { "isort", "black" },
+        python = { 'isort', 'black' },
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
@@ -1082,3 +1174,7 @@ if vim.fn.has 'win32' == 1 then
   vim.opt.shellquote = ''
   vim.opt.shellxquote = ''
 end
+
+-- [[ Force cursor color via Neovim highlight groups ]]
+vim.api.nvim_set_hl(0, 'Cursor', { fg = 'none', bg = '#01450d' })
+vim.api.nvim_set_hl(0, 'TermCursor', { fg = 'none', bg = '#01450d' })
