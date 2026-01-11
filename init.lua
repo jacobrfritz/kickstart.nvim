@@ -159,7 +159,7 @@ vim.o.inccommand = 'split'
 vim.o.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.o.scrolloff = 15 -- Default is 10
+vim.o.scrolloff = 10
 
 -- if performing an operation that would fail due to unsaved changes in the buffer (like `:q`),
 -- instead raise a dialog asking if you wish to save the current file(s)
@@ -304,11 +304,12 @@ require('lazy').setup({
   {
     'sphamba/smear-cursor.nvim',
     opts = {
-      cursor_color = '#01450d', -- Matches the "soft" color above
       stiffness = 0.9, -- Lower = "lazier" and softer movement
       trailing_stiffness = 0.5, -- Lower = longer, softer trail
       distance_stop_animating = 0.5, -- Smooths out the final "snap"
       color_interpolation_exponential = false,
+      cursor_color = '#fab387',
+      background_color = '#1a1b26',
     },
   },
 
@@ -370,24 +371,11 @@ require('lazy').setup({
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = {
       options = {
-        theme = 'catppuccin',
+        theme = 'tokyonight',
         component_separators = '|',
         section_separators = '',
       },
     },
-  },
-
-  -- COLORSCHEME: High-contrast, soft color palette
-  {
-    'catppuccin/nvim',
-    name = 'catppuccin',
-    priority = 1000,
-    config = function()
-      require('catppuccin').setup {
-        flavour = 'mocha', -- latte, frappe, macchiato, mocha
-      }
-      vim.cmd.colorscheme 'catppuccin'
-    end,
   },
 
   {
@@ -1064,17 +1052,17 @@ require('lazy').setup({
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
+      --local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      --statusline.setup { use_icons = vim.g.have_nerd_font }
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
       -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
-      end
+      -----@diagnostic disable-next-line: duplicate-set-field
+      --statusline.section_location = function()
+      --  return '%2l:%-2v'
+      --end
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
@@ -1160,9 +1148,7 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
---
---
---
+
 -- Platform Specific Config
 if vim.fn.has 'win32' == 1 then
   -- This only runs on Windows
@@ -1174,7 +1160,3 @@ if vim.fn.has 'win32' == 1 then
   vim.opt.shellquote = ''
   vim.opt.shellxquote = ''
 end
-
--- [[ Force cursor color via Neovim highlight groups ]]
-vim.api.nvim_set_hl(0, 'Cursor', { fg = 'none', bg = '#01450d' })
-vim.api.nvim_set_hl(0, 'TermCursor', { fg = 'none', bg = '#01450d' })
