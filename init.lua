@@ -591,9 +591,6 @@ require('lazy').setup({
           --  To jump back, press <C-t>.
           map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
-          -- Jump to the definition of the word under your cursor.
-          map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
-
           -- This makes 'gd' use the LSP and show up in your 'g' menu
           map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
