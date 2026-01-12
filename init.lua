@@ -9,11 +9,26 @@ vim.g.have_nerd_font = true
 -- [[ Setting options ]]
 -- See `:help vim.o`
 
+-- My Settings
+--
+-- change tab size
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
+vim.opt.expandtab = true
+vim.opt.softtabstop = 4
+
+vim.opt.smartindent = true
+
+vim.opt.updatetime = 50
+
+vim.opt.colorcolumn = '80'
+
+-- End My Settings
 -- Make line numbers default
 vim.o.number = true
 
 --  Relative Line Numbers
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -94,10 +109,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -116,6 +131,13 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
+
+-- My Keymaps
+--
+-- git
+vim.keymap.set('n', '<leader>gs', vim.cmd.Git)
+
+-- End My Keymaps
 
 -- Highlight when yanking (copying) text
 --  Try it with `yap` in normal mode
@@ -208,6 +230,9 @@ require('lazy').setup({
   -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
 
   -- MY PLUGINS
+  'tpope/vim-fugitive',
+  -- below could be used for github
+  --'tpope/vim-rhubarb',
   {
     'MagicDuck/grug-far.nvim',
     config = function()
@@ -256,13 +281,6 @@ require('lazy').setup({
       require('oil').setup()
       vim.keymap.set('n', '-', '<CMD>Oil<CR>', { desc = 'Open parent directory' })
     end,
-  },
-
-  -- AUTO-PAIRS: Automatically close brackets, quotes, and parenthesis
-  {
-    'windwp/nvim-autopairs',
-    event = 'InsertEnter',
-    opts = {}, -- this runs setup() automatically
   },
 
   -- STATUSLINE: A more feature-rich bottom status bar
@@ -1020,10 +1038,10 @@ require('lazy').setup({
   --
   -- require 'kickstart.plugins.debug',
   -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
@@ -1082,9 +1100,3 @@ end
 
 -- Apply the transparency
 clear_bg()
-
--- change tab size
-vim.opt.tabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = true
-vim.opt.softtabstop = 4
