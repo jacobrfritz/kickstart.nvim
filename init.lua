@@ -234,6 +234,25 @@ require('lazy').setup({
   -- below could be used for github
   --'tpope/vim-rhubarb',
   {
+    'ethanholz/nvim-lastplace',
+    config = function()
+      require('nvim-lastplace').setup {
+        lastplace_ignore_buftype = { 'quickfix', 'nofile', 'help' },
+        lastplace_ignore_filetype = { 'gitcommit', 'gitrebase', 'svn', 'hgcommit' },
+        lastplace_open_folds = true,
+      }
+    end,
+  },
+  {
+    'akinsho/toggleterm.nvim',
+    version = '*',
+    opts = {
+      open_mapping = [[<c-t>]], -- Use Ctrl + t to open/close
+      direction = 'float', -- 'float', 'horizontal', or 'vertical'
+      shade_terminals = true,
+    },
+  },
+  {
     'MagicDuck/grug-far.nvim',
     config = function()
       require('grug-far').setup {}
@@ -313,7 +332,11 @@ require('lazy').setup({
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
       local harpoon = require 'harpoon'
-      harpoon:setup()
+      harpoon:setup {
+        global_settings = {
+          save_on_change = true, -- Ensures changes are saved to the harpoon file
+        },
+      }
 
       -- Keybindings
       vim.keymap.set('n', '<leader>a', function()
