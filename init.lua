@@ -252,13 +252,9 @@ require('lazy').setup({
       shade_terminals = true,
     },
   },
-  {
-    'MagicDuck/grug-far.nvim',
-    config = function()
-      require('grug-far').setup {}
-      vim.keymap.set('n', '<leader>sp', '<cmd>GrugFar<CR>', { desc = '[S]earch and Re[p]lace' })
-    end,
-  },
+
+  --💥 Highly experimental plugin that completely replaces the UI for messages,
+  --cmdline and the popupmenu.
   {
     'folke/noice.nvim',
     event = 'VeryLazy',
@@ -267,8 +263,7 @@ require('lazy').setup({
       -- if you took out these dependencies, noice would fail
       'MunifTanjim/nui.nvim',
       -- OPTIONAL:
-      --   `nvim-notify` is used to make the popup notifications look great.
-      --   `rcarriga/nvim-notify`
+      'nvim-notify', --is used to make the popup notifications look great.
       'rcarriga/nvim-notify',
     },
   },
@@ -289,7 +284,6 @@ require('lazy').setup({
     },
   },
 
-  -- PROJECT ERRORS: Trouble.nvim
   -- FILE EXPLORER: Edit your filesystem like a normal text buffer
   {
     'stevearc/oil.nvim',
@@ -315,6 +309,7 @@ require('lazy').setup({
     },
   },
 
+  -- PROJECT ERRORS: Trouble.nvim
   {
     'folke/trouble.nvim',
     dependencies = { 'nvim-tree/nvim-web-devicons' },
@@ -976,7 +971,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'tokyonight-moon'
     end,
   },
 
@@ -1032,7 +1027,21 @@ require('lazy').setup({
       end
 
       treesitter.setup {
-        ensure_installed = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' },
+        ensure_installed = {
+          'bash',
+          'c',
+          'diff',
+          'html',
+          'lua',
+          'luadoc',
+          'markdown',
+          'markdown_inline',
+          'query',
+          'vim',
+          'vimdoc',
+          'python',
+          'javascript',
+        },
         auto_install = true,
         highlight = {
           enable = true,
