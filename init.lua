@@ -234,6 +234,16 @@ require('lazy').setup({
   -- below could be used for github
   --'tpope/vim-rhubarb',
   {
+    'okuuva/auto-save.nvim',
+    version = '^1.0.0', -- see https://devhints.io/semver, alternatively use '*' to use the latest tagged release
+    cmd = 'ASToggle', -- optional for lazy loading on command
+    event = { 'InsertLeave', 'TextChanged' }, -- optional for lazy loading on trigger events
+    opts = {
+      -- your config goes here
+      -- or just leave it empty :)
+    },
+  },
+  {
     'ethanholz/nvim-lastplace',
     config = function()
       require('nvim-lastplace').setup {
@@ -746,12 +756,74 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        pyright = {},
-        ts_ls = {},
-        html = {},
-        cssls = {},
-        sqlls = {},
-        r_language_server = {},
+        pyright = {
+          settings = {
+            pyright = {
+              -- Use Ruff for organizing imports
+              disableOrganizeImports = true,
+            },
+            python = {
+              analysis = {
+                ignore = { '*' }, -- Optional: Let Ruff handle all linting/diagnostics
+                typeCheckingMode = 'basic', -- Fixed to 'standard' logic
+              },
+            },
+          },
+        },
+        ruff = {
+          -- We override the 'on_attach' for Ruff specifically to
+          -- prevent it from fighting with Pyright over the 'K' (hover) key.
+          on_attach = function(client, _)
+            if client.name == 'ruff' then
+              client.server_capabilities.hoverProvider = false
+            end
+          end,
+        },
+        ts_ls = {
+          init_options = {
+            preferences = {
+              -- Speeds up the LSP by not searching through giant node_modules folders
+              disableSuggestions = false,
+            },
+          },
+        },
+        html = { filetypes = { 'html', 'twig', 'hbs' } },
+        cssls = {}, -- Default is usually perfect here
+        sqlls = {
+          filetypes = { 'sql', 'mysql' },
+          root_dir = function()
+            return vim.loop.cwd()
+          end,
+          settings = {
+            sql = {
+              -- If you use specific dialects, you can define them here
+              dialect = 'postgres',
+            },
+          },
+        },
+        r_language_server = {
+          settings = {
+            r = {
+              lsp = {
+                rich_editing = true,
+                diagnostics = true,
+                update_capabilities = true,
+              },
+            },
+          },
+        },
+        jsonls = {},
+        yamlls = {
+          settings = {
+            yaml = {
+              -- Essential for data science: automatically pulls schemas for
+              -- GitHub Actions, Docker Compose, etc.
+              schemaStore = { enable = true },
+              -- Optional: specific schemas for Kubernetes if you use it
+              -- schemas = { kubernetes = "*.k8s.yaml" },
+            },
+          },
+        },
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -770,6 +842,7 @@ require('lazy').setup({
               completion = {
                 callSnippet = 'Replace',
               },
+              diagnostics = { globals = { 'vim' } },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
               -- diagnostics = { disable = { 'missing-fields' } },
             },
@@ -845,9 +918,8 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        python = { 'isort', 'black' },
-        --
+        -- Ruff for both fixing common errors and formatting
+        python = { 'ruff_fix', 'ruff_format' },
         -- You can use 'stop_after_first' to run the first available formatter from the list
         javascript = { 'prettierd', 'prettier', stop_after_first = true },
       },
