@@ -759,22 +759,25 @@ require('lazy').setup({
         pyright = {
           settings = {
             pyright = {
-              -- Use Ruff for organizing imports
+              -- Let Ruff handle organizing imports
               disableOrganizeImports = true,
             },
             python = {
               analysis = {
-                ignore = { '*' }, -- Optional: Let Ruff handle all linting/diagnostics
-                typeCheckingMode = 'basic', -- Fixed to 'standard' logic
+                -- Use 'standard' for type checking, but 'ignore' for all-around linting.
+                -- This is the key to stopping duplicate error popups.
+                typeCheckingMode = 'standard',
+                ignore = { '*' },
               },
             },
           },
         },
+
         ruff = {
-          -- We override the 'on_attach' for Ruff specifically to
-          -- prevent it from fighting with Pyright over the 'K' (hover) key.
+          -- The standard ruff server (native Rust)
           on_attach = function(client, _)
             if client.name == 'ruff' then
+              -- Disable hover in favor of Pyright's more detailed hover docs
               client.server_capabilities.hoverProvider = false
             end
           end,
