@@ -275,6 +275,13 @@ require('lazy').setup({
       -- OPTIONAL:
       'nvim-notify', --is used to make the popup notifications look great.
       'rcarriga/nvim-notify',
+      opts = {
+        -- Set a larger max width so Pyright/Ruff errors don't wrap so much
+        max_width = 80,
+        -- 'compact' or 'minimal' can sometimes help with visibility
+        render = 'compact',
+        timeout = 5000, -- Give yourself 5 seconds to read them
+      },
     },
   },
 
@@ -897,10 +904,15 @@ require('lazy').setup({
       {
         '<leader>f',
         function()
-          require('conform').format { async = true, lsp_format = 'fallback' }
+          -- This manually triggers BOTH fixing and formatting
+          require('conform').format {
+            async = true,
+            lsp_format = 'fallback',
+            formatters = { 'ruff_fix', 'ruff_format' },
+          }
         end,
         mode = '',
-        desc = '[F]ormat buffer',
+        desc = '[F]ormat buffer (including Ruff fixes)',
       },
     },
     opts = {
@@ -921,8 +933,8 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
-        -- Ruff for both fixing common errors and formatting
-        python = { 'ruff_fix', 'ruff_format' },
+        -- Ruff formatting
+        python = { 'ruff_format' },
         -- You can use 'stop_after_first' to run the first available formatter from the list
         javascript = { 'prettierd', 'prettier', stop_after_first = true },
       },
