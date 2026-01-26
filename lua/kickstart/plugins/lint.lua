@@ -9,6 +9,13 @@ return {
         markdown = { 'markdownlint' },
       }
 
+      -- Custom configuration for markdownlint
+      -- This passes the 4-space indent rule directly to the CLI
+      lint.linters.markdownlint.args = {
+        '--config',
+        '{"MD007": {"indent": 4}}',
+        '--',
+      }
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
       -- instead set linters_by_ft like this:
       -- lint.linters_by_ft = lint.linters_by_ft or {}
