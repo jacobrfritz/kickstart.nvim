@@ -234,6 +234,24 @@ require('lazy').setup({
   -- below could be used for github
   --'tpope/vim-rhubarb',
   {
+    'MeanderingProgrammer/render-markdown.nvim',
+    dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
+    ---@module 'render-markdown'
+    ---@type render.md.UserConfig
+    opts = {
+      latex = {
+        enabled = true,
+        converter = 'latex2text',
+      },
+      -- Adding the completion guidance here
+      completions = {
+        lsp = {
+          enabled = true,
+        },
+      },
+    },
+  },
+  {
     'okuuva/auto-save.nvim',
     version = '^1.0.0',
     cmd = 'ASToggle',
@@ -1130,6 +1148,8 @@ require('lazy').setup({
           'html',
           'lua',
           'luadoc',
+          'latex',
+          'yaml',
           'markdown',
           'markdown_inline',
           'query',
@@ -1216,6 +1236,10 @@ if vim.fn.has 'win32' == 1 then
   vim.opt.shellpipe = '2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode'
   vim.opt.shellquote = ''
   vim.opt.shellxquote = ''
+end
+
+if jit.os == 'OSX' then
+  vim.env.PATH = '/opt/homebrew/bin:' .. vim.env.PATH
 end
 
 -- Function to clear backgrounds
